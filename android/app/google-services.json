@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "805447398223",
+    "project_id": "mycapp-77ad9",
+    "storage_bucket": "mycapp-77ad9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:805447398223:android:32dab95c7a457ed3b68b3a",
+        "android_client_info": {
+          "package_name": "com.example.test_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnyd7chHKtslVR_KVEVRi49s_My-_DW9w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
