@@ -2,9 +2,9 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import '/responsive/mobile_screen_layout.dart';
 import 'package:provider/provider.dart';
 import '../provider/user_provider.dart';
-import '/responsive/mobile_screen_layout.dart';
 import '../resources/firebase_methods.dart';
 import '../responsive/responsive_layout.dart';
 import '../responsive/web_screen_layout.dart';
@@ -24,17 +24,6 @@ class _AddConcernScreenState extends State<AddConcernScreen> {
   Uint8List? _file;
   bool image = false;
   bool isLoading = false;
-  // String username="";
-  // String uid="";
-  // String  url="";
-  // void getuser()async{
-  //   DocumentSnapshot snap= await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).get(); 
-  //   setState(() {
-  //     username=(snap.data() as Map<String,dynamic>)['Name'];
-  //     uid=(snap.data() as Map<String,dynamic>)['Uid'];
-  //     url=(snap.data() as Map<String,dynamic>)['PhotoUrl'];
-  //   });
-  // }
   _selectImage(BuildContext parentContext) async {
     return showDialog(
       context: parentContext,
@@ -49,7 +38,6 @@ class _AddConcernScreenState extends State<AddConcernScreen> {
                   Uint8List file = await pickImage(ImageSource.camera);
                   setState(() {
                     _file = file;
-                    image=true;
                   });
                 }),
             SimpleDialogOption(
@@ -60,7 +48,6 @@ class _AddConcernScreenState extends State<AddConcernScreen> {
                   Uint8List file = await pickImage(ImageSource.gallery);
                   setState(() {
                     _file = file;
-                    image=true;
                   });
                 }),
             SimpleDialogOption(
@@ -75,7 +62,6 @@ class _AddConcernScreenState extends State<AddConcernScreen> {
       },
     );
   }
-
   void postImage(String uid, String username, String profImage) async {
     setState(() {
       isLoading = true;
@@ -86,9 +72,9 @@ class _AddConcernScreenState extends State<AddConcernScreen> {
       String res = await FireStoreMethods().uploadPost(
         _descriptionController.text,
         _tagController.text,
-        _file!,
         username,
-         uid,
+        _file!,
+        uid,
         profImage
       );
       if (res == "success") {
@@ -149,12 +135,12 @@ class _AddConcernScreenState extends State<AddConcernScreen> {
       body: Center(
         child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: Column(
+            child: 
+            Column(
               children: [
                 const SizedBox(
                   height: 30,
                 ),
-
                 !image
                     ? Container(
                         alignment: Alignment.center,
@@ -197,7 +183,8 @@ class _AddConcernScreenState extends State<AddConcernScreen> {
                 ),
                 const SizedBox(height: 40),
                 InkWell(
-                  onTap: () => postImage(userProvider.getUser!.name,userProvider.getUser!.uid,userProvider.getUser!.photoUrl),
+                  onTap: () => postImage(userProvider.getUser!.uid,
+                      userProvider.getUser!.name, userProvider.getUser!.photoUrl),
                   child: Container(
                       width: 150, //change this for web
                       alignment: Alignment.center,

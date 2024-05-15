@@ -10,14 +10,13 @@ class AuthMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   //get user details
-  Future<model.User> getUserDetails() async {
+  Future<model.User?> getUserDetails() async {
     User currentUser = _auth.currentUser!;
+    DocumentSnapshot documentSnapshot =await _firestore.collection('users').doc(currentUser.uid).get(); 
 
-    DocumentSnapshot documentSnapshot =
-        await _firestore.collection('users').doc(currentUser.uid).get();
-
-    return model.User.fromSnap(documentSnapshot);
+       return model.User.fromSnap(documentSnapshot);
   }
+
 
   // Signing Up User
   Future<String> signUpUser({
@@ -85,17 +84,16 @@ class AuthMethods {
     }
     return res;
   }
-  
-  Future<String> save({
-    required String name,
-    required String email,
-    required String department,
-    required String gender,
-    required String phonenumber,
-    required Uint8List file
-  }) async {
+
+  Future<String> save(
+      {required String name,
+      required String email,
+      required String department,
+      required String gender,
+      required String phonenumber,
+      required Uint8List file}) async {
     String res = "Data Not uploaded";
-     try {
+    try {
       if (name.isNotEmpty
           // ignore: unnecessary_null_comparison
           ||
@@ -104,18 +102,18 @@ class AuthMethods {
           gender.isNotEmpty ||
           phonenumber.isNotEmpty ||
           file != null) {
-    User ? currentUser = _auth.currentUser;
-            String photoUrl = await StorageMethods()
+        User? currentUser = _auth.currentUser;
+        String photoUrl = await StorageMethods()
             .uploadImageToStorage('profilePics', file, false);
         model.User user = model.User(
-            name: name,
-            email: email,
-            uid: currentUser!.uid,
-            department: department,
-            gender: gender,
-            phonenumber: phonenumber,
-            photoUrl: photoUrl,
-            );
+          name: name,
+          email: email,
+          uid: currentUser!.uid,
+          department: department,
+          gender: gender,
+          phonenumber: phonenumber,
+          photoUrl: photoUrl,
+        );
         await _firestore
             .collection("users")
             .doc(currentUser.uid)
@@ -129,6 +127,7 @@ class AuthMethods {
     }
     return res;
   }
+
   Future googleSiginIn() async {
     final GoogleSignIn gSignin = GoogleSignIn();
     try {
@@ -144,8 +143,6 @@ class AuthMethods {
       e.toString();
     }
   }
-
-
 
   Future<String> resetpassword({required String email}) async {
     String res = "Error Sending password reset email";

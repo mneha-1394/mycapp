@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:test_app/provider/user_provider.dart';
 import 'package:test_app/utils/colors.dart';
 import 'package:test_app/utils/dimension.dart';
+import 'package:test_app/widgets/drawer.dart';
 class Feedscreen extends StatefulWidget {
   const Feedscreen({super.key});
 
@@ -11,6 +14,7 @@ class Feedscreen extends StatefulWidget {
 class _FeedscreenState extends State<Feedscreen> {
   @override
   Widget build(BuildContext context) {
+    final userProvider=Provider.of<UserProvider>(context);
     final width = MediaQuery.of(context).size.width;
     return  Scaffold(
     backgroundColor: width > webScreenSize ? secondaryColor : primaryColor,
@@ -19,8 +23,8 @@ class _FeedscreenState extends State<Feedscreen> {
           backgroundColor: Colors.green,
           iconTheme: const IconThemeData(color: primaryColor),
         ),
-         endDrawer: const Drawer(),
-      
+         endDrawer: const DrawerScreen(),
+      body: Text(userProvider.getUser!.uid),
     );
   }
 }
