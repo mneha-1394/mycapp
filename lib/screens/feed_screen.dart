@@ -4,6 +4,8 @@ import 'package:test_app/provider/user_provider.dart';
 import 'package:test_app/utils/colors.dart';
 import 'package:test_app/utils/dimension.dart';
 import 'package:test_app/widgets/drawer.dart';
+
+import '../model/user.dart';
 class Feedscreen extends StatefulWidget {
   const Feedscreen({super.key});
 
@@ -12,9 +14,20 @@ class Feedscreen extends StatefulWidget {
 }
 
 class _FeedscreenState extends State<Feedscreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshUserData();
+  }
+  void _refreshUserData() async {
+    await Provider.of<UserProvider>(context, listen: false).refreshUser();
+  }
+  
   @override
   Widget build(BuildContext context) {
     final userProvider=Provider.of<UserProvider>(context);
+     final user = userProvider.getUser;
     final width = MediaQuery.of(context).size.width;
     return  Scaffold(
     backgroundColor: width > webScreenSize ? secondaryColor : primaryColor,
@@ -24,7 +37,7 @@ class _FeedscreenState extends State<Feedscreen> {
           iconTheme: const IconThemeData(color: primaryColor),
         ),
          endDrawer: const DrawerScreen(),
-      body: Text(userProvider.getUser!.uid),
+      body: user==null ? Center(child: CircularProgressIndicator(),): Text("No Concerns Yet",style: TextStyle(fontSize: 40),),
     );
   }
 }

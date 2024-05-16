@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:image_picker/image_picker.dart';
 import '/responsive/mobile_screen_layout.dart';
 import 'package:provider/provider.dart';
@@ -20,10 +21,40 @@ class AddConcernScreen extends StatefulWidget {
 
 class _AddConcernScreenState extends State<AddConcernScreen> {
   final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _tagController = TextEditingController();
+  GlobalKey<FlutterMentionsState> key=GlobalKey<FlutterMentionsState>();
+   
   Uint8List? _file;
   bool image = false;
   bool isLoading = false;
+  List <Map<String,dynamic>> data=[
+                        {
+                          "id": "nehar",
+                          "display": "antiragging_abes",
+                          "photo":
+                              "https://www.bcrecapc.ac.in/public/media/819antiragging.png"
+                        },
+                        {
+                          "id": "61asasgasgsag6a",
+                          "display": "medicalCell_abes",
+                          "photo":
+                              "https://pics.clipartpng.com/Medical_Bag_PNG_Clipart-351.png",
+                        },
+                          { "id": "61asasgasgsag6a",
+                          "display": "womenWelfareCell_abes",
+                          "photo":
+                              "https://sjcetpalai.ac.in/wp-content/uploads/2018/04/women-cell.png",
+                        },
+                         { "id": "61asasgasgsag6a",
+                          "display": "studentCounselling_abes",
+                          "photo":
+                              "http://www.aloysiusdegree.college/assets/img/Counseling_Cell.png",
+                        },
+                         { "id": "61asasgasgsag6a",
+                          "display": "campusWelfare_abes",
+                          "photo":
+                              "https://cdn.vectorstock.com/i/1000x1000/82/29/welfare-vector-30488229.webp",
+                        },
+                      ];
   _selectImage(BuildContext parentContext) async {
     return showDialog(
       context: parentContext,
@@ -38,6 +69,7 @@ class _AddConcernScreenState extends State<AddConcernScreen> {
                   Uint8List file = await pickImage(ImageSource.camera);
                   setState(() {
                     _file = file;
+                    image=true;
                   });
                 }),
             SimpleDialogOption(
@@ -48,6 +80,7 @@ class _AddConcernScreenState extends State<AddConcernScreen> {
                   Uint8List file = await pickImage(ImageSource.gallery);
                   setState(() {
                     _file = file;
+                    image=true;
                   });
                 }),
             SimpleDialogOption(
@@ -62,6 +95,7 @@ class _AddConcernScreenState extends State<AddConcernScreen> {
       },
     );
   }
+
   void postImage(String uid, String username, String profImage) async {
     setState(() {
       isLoading = true;
@@ -70,13 +104,12 @@ class _AddConcernScreenState extends State<AddConcernScreen> {
     try {
       // upload to storage and db
       String res = await FireStoreMethods().uploadPost(
-        _descriptionController.text,
-        _tagController.text,
-        username,
-        _file!,
-        uid,
-        profImage
-      );
+          _descriptionController.text,
+          key.toString(),
+          username,
+          _file!,
+          uid,
+          profImage);
       if (res == "success") {
         setState(() {
           isLoading = false;
@@ -108,7 +141,7 @@ class _AddConcernScreenState extends State<AddConcernScreen> {
     setState(() {
       _file = null;
     });
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => const ResponsiveLayout(
               mobileScreenLayout: MobileScreenLayout(),
               webScreenLayout: WebScreenLayout(),
@@ -119,12 +152,20 @@ class _AddConcernScreenState extends State<AddConcernScreen> {
   void dispose() {
     super.dispose();
     _descriptionController.dispose();
-    _tagController.dispose();
   }
 
+ @override
+  void initState() {
+    super.initState();
+    _refreshUserData();
+  }
+  void _refreshUserData() async {
+    await Provider.of<UserProvider>(context, listen: false).refreshUser();
+  }
   @override
   Widget build(BuildContext context) {
     final UserProvider userProvider = Provider.of<UserProvider>(context);
+    final user = userProvider.getUser;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -135,8 +176,7 @@ class _AddConcernScreenState extends State<AddConcernScreen> {
       body: Center(
         child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: 
-            Column(
+            child: Column(
               children: [
                 const SizedBox(
                   height: 30,
@@ -175,16 +215,37 @@ class _AddConcernScreenState extends State<AddConcernScreen> {
                   maxLines: 2,
                   textInputAction: TextInputAction.newline,
                 ),
-                TextField(
-                  controller: _tagController,
-                  decoration: const InputDecoration(
-                    hintText: "Tag Concerned Authority",
-                  ),
+                FlutterMentions(
+                  key:key,
+                  suggestionPosition: SuggestionPosition.Bottom,
+                  decoration: const InputDecoration(hintText: "Tag Concerned Authority",),
+                  suggestionListDecoration: BoxDecoration(border: Border.all(),borderRadius: const BorderRadius.all(Radius.zero)),
+                  maxLines: 5,
+                  minLines: 1,
+                  mentions: [
+                    Mention(
+                      data: data,
+                      style: const TextStyle(color: blueColor),
+                      trigger: "@",
+                      suggestionBuilder: (data){
+                          return Container(color: primaryColor,child: Row(children: [
+                            const SizedBox(width:20),
+                            CircleAvatar(radius: 22, backgroundImage: NetworkImage(data['photo']),),
+                            const SizedBox(width:20),
+                            Text(data['display'])
+                          ],),);
+                      },
+                       
+                    )
+                  ],
                 ),
+
                 const SizedBox(height: 40),
                 InkWell(
-                  onTap: () => postImage(userProvider.getUser!.uid,
-                      userProvider.getUser!.name, userProvider.getUser!.photoUrl),
+                  onTap: () => postImage(
+                      user!.uid,
+                      user.name,
+                      user.photoUrl),
                   child: Container(
                       width: 150, //change this for web
                       alignment: Alignment.center,

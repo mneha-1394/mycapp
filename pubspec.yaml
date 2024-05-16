@@ -39,6 +39,7 @@ dependencies:
   image_picker:
   flutter_staggered_grid_view:
   google_sign_in:
+  flutter_mentions:
   
 
   # The following adds the Cupertino Icons font to your application.

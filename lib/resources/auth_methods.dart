@@ -13,7 +13,8 @@ class AuthMethods {
   Future<model.User?> getUserDetails() async {
     User currentUser = _auth.currentUser!;
     DocumentSnapshot documentSnapshot =await _firestore.collection('users').doc(currentUser.uid).get(); 
-
+      print("getuserdone");
+      
        return model.User.fromSnap(documentSnapshot);
   }
 
@@ -76,6 +77,8 @@ class AuthMethods {
         await _auth.signInWithEmailAndPassword(
             email: email, password: password);
         res = "success";
+        
+        
       } else {
         res = "Please enter all the fields";
       }
