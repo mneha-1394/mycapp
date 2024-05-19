@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:test_app/screens/profile_screen.dart';
 import '../utils/colors.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -33,14 +34,13 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
       body: isShowUsers
-          ? FutureBuilder(
+          ? FutureBuilder<QuerySnapshot>(
               future: FirebaseFirestore.instance
                   .collection('users')
                   .where(
-                    'username',
+                    'Name',
                     isGreaterThanOrEqualTo: searchController.text,
-                  )
-                  .get(),
+                  ).get(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(
@@ -50,7 +50,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 return ListView.builder(
                   itemCount: (snapshot.data! as dynamic).docs.length,
                   itemBuilder: (context, index) {
-                    return InkWell(
+                    return !snapshot.hasData?const LinearProgressIndicator(): InkWell(
                       // onTap: () => Navigator.of(context).push(
                       //   MaterialPageRoute(
                       //     builder: (context) => ProfileScreen(
@@ -61,12 +61,12 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: ListTile(
                         leading: CircleAvatar(
                           backgroundImage: NetworkImage(
-                            (snapshot.data! as dynamic).docs[index]['photoUrl'],
+                            (snapshot.data! as dynamic).docs[index]['PhotoUrl'],
                           ),
                           radius: 16,
                         ),
                         title: Text(
-                          (snapshot.data! as dynamic).docs[index]['username'],
+                          (snapshot.data! as dynamic).docs[index]['Name'],
                         ),
                       ),
                     );

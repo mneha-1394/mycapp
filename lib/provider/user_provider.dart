@@ -12,7 +12,6 @@ class UserProvider with ChangeNotifier {
     User? user = await _authMethods.getUserDetails();
     _user = user;
     notifyListeners();
-    return _user;
   }
 
 }

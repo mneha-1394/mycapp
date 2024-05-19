@@ -3,18 +3,34 @@ import 'package:provider/provider.dart';
 import 'package:test_app/provider/user_provider.dart';
 import 'package:test_app/utils/colors.dart';
 
-class DrawerScreen extends StatelessWidget {
+class DrawerScreen extends StatefulWidget {
   const DrawerScreen({super.key});
+
+  @override
+  State<DrawerScreen> createState() => _DrawerScreenState();
+}
+
+class _DrawerScreenState extends State<DrawerScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _refreshUserData();
+  }
+
+  void _refreshUserData() async {
+    await Provider.of<UserProvider>(context, listen: false).refreshUser();
+  }
 
   @override
   Widget build(BuildContext context) {
     final UserProvider userProvider = Provider.of<UserProvider>(context);
+     final user = userProvider.getUser;
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
+           DrawerHeader(
+            decoration: const BoxDecoration(
               color: drawerColor,
             ),
             child: Column(
@@ -22,11 +38,11 @@ class DrawerScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CircleAvatar(
-                  backgroundImage: AssetImage(""),
+                  backgroundImage: NetworkImage(user!.photoUrl),
                 radius: 45,
               ),
-              SizedBox(height: 20,),
-               Text("email of the person")],
+              const SizedBox(height: 20,),
+               Text(user.email)],
             ),
           ),
           ListTile(
