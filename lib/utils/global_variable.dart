@@ -10,6 +10,5 @@ List<Widget> homeScreenItems = [
    const Feedscreen(),
   const SearchScreen(),
   const AddConcernScreen(),
-  const Text('notifications'),
   ProfileScreen(uid: uid),
 ];

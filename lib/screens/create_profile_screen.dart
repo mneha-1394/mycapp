@@ -74,6 +74,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
         backgroundColor: primaryColor,
         body: SafeArea(

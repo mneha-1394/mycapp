@@ -71,16 +71,8 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
               backgroundColor: mobileBackgroundColor),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.notifications_active,
-              color: (_page == 3) ? primaryColor : secondaryColor,
-            ),
-            label: '',
-            backgroundColor: mobileBackgroundColor,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
               Icons.person,
-              color: (_page == 4) ? primaryColor : secondaryColor,
+              color: (_page == 3) ? primaryColor : secondaryColor,
             ),
             label: '',
             backgroundColor: mobileBackgroundColor,

@@ -157,7 +157,7 @@ class _PostCardState extends State<PostCard> {
             onDoubleTap: () {
               FireStoreMethods().likePost(
                 widget.snap['postId'].toString(),
-                user.uid,
+                widget.snap['uid'].toString(),
                 widget.snap['likes'],
               );
               setState(() {
@@ -215,7 +215,7 @@ class _PostCardState extends State<PostCard> {
                         ),
                   onPressed: () => FireStoreMethods().likePost(
                     widget.snap['postId'].toString(),
-                    user.uid,
+                    widget.snap['uid'].toString(),
                     widget.snap['likes'],
                   ),
                 ),
